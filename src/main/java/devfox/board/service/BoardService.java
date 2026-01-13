@@ -1,6 +1,6 @@
 package devfox.board.service;
 
-import devfox.board.dto.CreateBoardDto;
+import devfox.board.dto.request.CreateBoardDto;
 import devfox.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

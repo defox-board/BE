@@ -3,7 +3,11 @@ CREATE TABLE IF NOT EXISTS users(
  id BIGINT AUTO_INCREMENT PRIMARY KEY,
  username VARCHAR(255) NOT NULL,
  password VARCHAR(255) NOT NULL,
- nickname VARCHAR(255),
+ email VARCHAR(255),
+ is_social TINYINT(1),
+ is_lock TINYINT(1),
+ user_role VARCHAR(20),
+ social_provider_type VARCHAR(50),
  profile_image_key VARCHAR(255)
 );
 
@@ -35,3 +39,14 @@ CREATE TABLE IF NOT EXISTS comment (
  FOREIGN KEY (board_id)
  REFERENCES board(id)
 );
+
+CREATE TABLE IF NOT EXISTS jwt_refresh_entity(
+
+ id BIGINT AUTO_INCREMENT PRIMARY KEY,
+ username VARCHAR(255) NOT NULL,
+ refresh VARCHAR(255), NOT NULL,
+ CONSTRAINT uk_username_refresh UNIQUE (username,refresh)
+);
+
+
+

@@ -1,12 +1,12 @@
-package devfox.board.dto;
+package devfox.board.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateBoardDto {
+public class CreateComment {
 
-    private String title;
+    private Long boardId;
     private String content;
 }

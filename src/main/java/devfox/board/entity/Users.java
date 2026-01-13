@@ -1,10 +1,8 @@
 package devfox.board.entity;
 
+import devfox.board.dto.request.UserRequestDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
@@ -12,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Users {
     @Id
@@ -19,8 +18,10 @@ public class Users {
     private Long id;
     @Column(name = "username",unique = true,nullable = false)
     private String username;
-    @Column(name = "nickname")
-    private String nickname;
+
+
+    @Column(name = "password")
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "social_provider_type")
@@ -28,6 +29,9 @@ public class Users {
 
     @Column(name = "is_social", nullable = false)
     private Boolean isSocial;
+
+    @Column(name = "is_lock")
+    private Boolean isLock;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
@@ -38,4 +42,9 @@ public class Users {
     private String profileImageKey;
 
 
+    public void updateUser(UserRequestDto dto) {
+        if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
+            this.email = dto.getEmail();
+        }
+        }
 }
