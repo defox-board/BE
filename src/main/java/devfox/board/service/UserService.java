@@ -46,6 +46,7 @@ public class UserService implements UserDetailsService {
         Users users = Users.builder()
                 .email(dto.getEmail())
                 .userRole(UserRole.USER)
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .username(dto.getUsername())
                 .isSocial(false)
                 .isLock(false)
@@ -83,7 +84,8 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
 
-        Users users = userRepository.findByUsernameAndIsLockAndIsSocial(username, false, false)
+        Users users = userRepository.findByUsernameAndIsLockAndIsSocial
+                        (username, false, false)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
         return User.builder()
                 .username(username)

@@ -17,12 +17,27 @@ public class JWTUtil {
 
     private SecretKey secretKey;
 
+    @Value("${jwt.secret}")
+    String secret;
+
+
     @Value("${jwt.accessTokenExpiresIn}")
     private Long accessTokenExpiresIn;
 
     @Value("${jwt.refreshTokenExpiresIn}")
     private Long refreshTokenExpiresIn;
 
+
+
+    public JWTUtil(@Value("${jwt.secret}") String secret) {
+
+        if (secret == null || secret.length() < 32) {
+            throw new IllegalArgumentException
+                    ("JWT secret key must be at least 32 characters.");
+        }
+        this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8),
+                Jwts.SIG.HS256.key().build().getAlgorithm());
+    }
 
     public String getRole(String token) {
 

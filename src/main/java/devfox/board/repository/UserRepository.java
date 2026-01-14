@@ -25,7 +25,7 @@ public class UserRepository {
         String sql = """
                 SELECT 
                 CASE WHEN
-                COUNT(*) > 0 THNE 1
+                COUNT(*) > 0 THEN 1
                 ELSE 0
                 END
                 FROM users u
@@ -42,13 +42,15 @@ public class UserRepository {
 
         String sql = """
                 INSERT INTO users 
-                (username,password,email,is_lock,is_social)
+                (username,password,email,is_lock,is_social,role,created_at)
                 VALUES(
                 :username,
                 :password,
                 :email,
                 :is_lock,
-                :is_social
+                :is_social,
+                :role,
+                now()
                 )
                 """;
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -58,6 +60,7 @@ public class UserRepository {
         params.addValue("email", users.getEmail());
         params.addValue("is_lock", users.getIsLock());
         params.addValue("is_social", users.getIsSocial());
+        params.addValue("role", users.getUserRole().name());
 
         template.update(sql, params, keyHolder, new String[]{"id"});
         return  keyHolder.getKey().longValue();
@@ -70,7 +73,8 @@ public class UserRepository {
 
 
         String sql = """
-                SELECT id, username, email, is_lock, is_social, role
+                SELECT 
+                id, username, email, is_lock, is_social, role, password
                                             FROM users
                                             WHERE username = :username
                                               AND is_lock = :isLock
@@ -80,7 +84,7 @@ public class UserRepository {
 
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("username", username);
-        params.addValue("is_lock", isLock);
+        params.addValue("isLock", isLock);
         params.addValue("isSocial", isSocial);
 
         List<Users> list = template.query(sql, params, (rs, roNum) ->
@@ -92,10 +96,10 @@ public class UserRepository {
                         .isLock(rs.getBoolean("is_lock"))
                         .isSocial(rs.getBoolean("is_social"))
                         .userRole(UserRole.valueOf(rs.getNString("role")))
+                        .password(rs.getNString("password"))
                         .build()
-
-
         );
+
         return list.stream().findFirst();
 
     }

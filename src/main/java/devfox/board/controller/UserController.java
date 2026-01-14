@@ -1,8 +1,10 @@
 package devfox.board.controller;
 
+import devfox.board.dto.request.LoginRequest;
 import devfox.board.dto.request.UserRequestDto;
 import devfox.board.dto.response.UserResponseDto;
 import devfox.board.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,8 @@ public class UserController {
 
     private final UserService userService;
 
+    //ユーザー存在チェック
+    @Operation(summary = "ユーザー存在チェック")
     @PostMapping("/user/exist")
     public ResponseEntity<Boolean> existUser(
             @Validated(UserRequestDto.existGroup.class)
@@ -27,7 +31,8 @@ public class UserController {
         return ResponseEntity.ok(userService.existUser(dto));
     }
 
-
+    //会員登録（かいいんとうろく）
+    @Operation(summary = "会員登録（かいいんとうろく）")
     @PostMapping("/join")
     public ResponseEntity<Map<String, Long>> join(
             @Validated(UserRequestDto.addGroup.class) @RequestBody UserRequestDto dto) {
@@ -37,6 +42,8 @@ public class UserController {
         return ResponseEntity.ok(responseBody);
     }
 
+    //ユーザー情報更新
+    @Operation(summary = "ユーザー情報更新")
     @PutMapping("/user")
     public ResponseEntity<String> updateUser(Authentication authentication,
                                              @Validated(UserRequestDto.updateGroup.class)
@@ -46,6 +53,8 @@ public class UserController {
         return ResponseEntity.ok("update完了");
     }
 
+    //ユーザー情報取得
+    @Operation(summary = "ユーザー情報取得")
     @GetMapping("/user")
     public ResponseEntity<UserResponseDto> getUserInfo(Authentication authentication) {
         UserResponseDto result = userService.getUserInfo(authentication.getName());
@@ -53,6 +62,8 @@ public class UserController {
 
     }
 
+    //会員退会
+    @Operation(summary = "会員退会")
     @DeleteMapping("/user")
     public ResponseEntity<String> deleteUser(Authentication authentication,
                                              @Validated(UserRequestDto.deleteGroup.class)
@@ -63,4 +74,9 @@ public class UserController {
 
     }
 
+    @Operation(summary = "ログイン")
+    @PostMapping("/login")
+    public void login(@RequestBody LoginRequest loginRequest) {
+
+    }
 }

@@ -3,12 +3,15 @@ package devfox.board.jwt;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import devfox.board.dto.request.LoginRequest;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,35 +31,32 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+@Slf4j
 public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 
     public static final String SPRING_SECURITY_FORM_USERNAME_KEY = "username";
 
     public static final String SPRING_SECURITY_FORM_PASSWORD_KEY = "password";
 
-    private static final RequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER
-            = PathPatternRequestMatcher.withDefaults()
+    private static final RequestMatcher DEFAULT_ANT_PATH_REQUEST_MATCHER = PathPatternRequestMatcher.withDefaults()
             .matcher(HttpMethod.POST, "/login");
 
     private String usernameParameter = SPRING_SECURITY_FORM_USERNAME_KEY;
 
     private String passwordParameter = SPRING_SECURITY_FORM_PASSWORD_KEY;
-
+    @Qualifier("LoginSuccessHandler")
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
-    public LoginFilter(AuthenticationManager authenticationManager,
-                       AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public LoginFilter(AuthenticationManager authenticationManager, AuthenticationSuccessHandler authenticationSuccessHandler) {
         super(DEFAULT_ANT_PATH_REQUEST_MATCHER, authenticationManager);
         this.authenticationSuccessHandler = authenticationSuccessHandler;
     }
-
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         if (!request.getMethod().equals("POST")) {
-            throw new AuthenticationServiceException
-                    ("Authentication method not supported: " + request.getMethod());
+            throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
         }
 
         Map<String, String> loginMap;
@@ -77,8 +77,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         String password = loginMap.get(passwordParameter);
         password = (password != null) ? password : "";
 
-        UsernamePasswordAuthenticationToken authRequest =
-                UsernamePasswordAuthenticationToken.unauthenticated(username,password);
+        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username,
+                password);
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);
     }
@@ -88,14 +88,27 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
 
+        log.info("successfulAuthentication 호출");
         authenticationSuccessHandler.onAuthenticationSuccess(request, response, authResult);
-
     }
+
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+
+        response.getWriter().write("""
+        {
+          "message": "login failed",
+          "reason": "%s"
+        }
+    """.formatted(failed.getMessage()));
+
     }
 
 }

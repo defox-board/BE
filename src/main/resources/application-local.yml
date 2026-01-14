@@ -26,4 +26,3 @@ jwt:
   secret: asdflkajsdgjqrewoitgujasdlkjadslgj
   accessTokenExpiresIn: 3600000
   refreshTokenExpiresIn: 604800000
-  expiration:

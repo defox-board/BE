@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Users {
+public class Users extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,6 +34,7 @@ public class Users {
     private Boolean isLock;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role",nullable = false)
     private UserRole userRole;
 
     private String email;

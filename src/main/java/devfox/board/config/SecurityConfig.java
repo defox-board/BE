@@ -76,12 +76,12 @@ public class   SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/user/exist", "/user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user").hasRole(UserRole.USER.name())
-                        .requestMatchers(HttpMethod.PUT, "/user").hasRole(UserRole.USER.name())
-                        .requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRole.USER.name())
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/user/exist", "/user").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/user").hasRole(UserRole.USER.name())
+//                        .requestMatchers(HttpMethod.PUT, "/user").hasRole(UserRole.USER.name())
+//                        .requestMatchers(HttpMethod.DELETE, "/user").hasRole(UserRole.USER.name())
+                        .anyRequest().permitAll()
                 );
 
 

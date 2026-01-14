@@ -1,11 +1,13 @@
 package devfox.board.exception;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Schema(hidden = true)
 public class ErrorResponse {
 
     private final int status;
