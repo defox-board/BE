@@ -1,5 +1,6 @@
 package devfox.board.entity;
 
+import devfox.board.dto.request.CreateBoardDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,4 +21,16 @@ public class Board extends BaseEntity{
     @Column(name = "user_id")
     private Long userId;
 
+
+    public void update(CreateBoardDto dto) {
+
+        if (dto.getContent() != null) {
+            this.content = dto.getContent();
+        }
+
+        if (dto.getTitle() != null) {
+            this.title = dto.getTitle();
+        }
+
+    }
 }
