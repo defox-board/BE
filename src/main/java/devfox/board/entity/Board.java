@@ -1,16 +1,14 @@
 package devfox.board.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Table(name = "board")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Getter
+@Builder
 public class Board extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

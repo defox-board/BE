@@ -58,7 +58,8 @@ public class UserService implements UserDetailsService {
         }
         return result;
     }
-
+    // ユーザー情報更新
+    // 本人のみが自分の情報を修正可能
     @Transactional
     public void updateUser(UserRequestDto dto, String username) throws AccessDeniedException {
 
@@ -78,7 +79,7 @@ public class UserService implements UserDetailsService {
 
 
     }
-
+    // Spring Security 認証用ユーザー取得
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -96,6 +97,8 @@ public class UserService implements UserDetailsService {
 
     }
 
+    // ユーザー削除
+    // 本人のみ削除可能、削除後 refreshToken も削除
     @Transactional
     public void deleteUser(UserRequestDto dto, String username) throws AccessDeniedException {
 
@@ -111,6 +114,8 @@ public class UserService implements UserDetailsService {
         jwtService.deleteRefreshByUsername(dto.getUsername());
     }
 
+    // ユーザー情報取得
+    // マイページなどで使用するユーザー基本情報取得
     @Transactional(readOnly = true)
     public UserResponseDto getUserInfo(String username) {
 

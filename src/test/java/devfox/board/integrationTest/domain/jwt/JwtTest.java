@@ -48,8 +48,8 @@ public class JwtTest {
     void Refresh_Token_저장_값확인() {
 
         //given
-        String username = "username";
-        String refresh = "refresh";
+        String username = "username2";
+        String refresh = "refresh2";
 
         //when
         jwtService.addRefresh(username, refresh);

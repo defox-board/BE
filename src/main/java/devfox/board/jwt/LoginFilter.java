@@ -77,7 +77,8 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
         String password = loginMap.get(passwordParameter);
         password = (password != null) ? password : "";
 
-        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username,
+        UsernamePasswordAuthenticationToken authRequest =
+                UsernamePasswordAuthenticationToken.unauthenticated(username,
                 password);
         setDetails(request, authRequest);
         return this.getAuthenticationManager().authenticate(authRequest);

@@ -171,4 +171,27 @@ public class UserRepository {
         return result;
 
     }
+
+    public Optional<Users> findByUsername(String username) {
+
+        String sql = """
+                
+                SELECT *
+                FROM users u
+                WHERE u.username = :username
+                """;
+
+        Map<String, String> param = Map.of("username", username);
+        Optional<Users> result = template.query(sql, param, (rs, roNum) ->
+
+                Users.builder()
+                        .id(rs.getLong("id"))
+                        .username(rs.getNString("username"))
+                        .email(rs.getNString("email"))
+                        .userRole(UserRole.valueOf(rs.getNString("role")))
+                        .build()
+
+        ).stream().findFirst();
+        return result;
+    }
 }

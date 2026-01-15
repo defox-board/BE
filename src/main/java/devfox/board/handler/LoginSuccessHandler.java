@@ -29,7 +29,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication)
             throws IOException, ServletException {
 
-        log.info("로그인 석세스 핸들러 호출");
 
         // username, role
         String username = authentication.getName();

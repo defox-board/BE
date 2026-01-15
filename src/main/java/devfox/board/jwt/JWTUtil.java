@@ -41,13 +41,13 @@ public class JWTUtil {
 
     public String getRole(String token) {
 
-        return Jwts.parser().verifyWith(secretKey).build().parseEncryptedClaims(token)
-                .getPayload().get("sub", String.class);
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
+                .getPayload().get("role", String.class);
 
     }
 
     public String getUsername(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseEncryptedClaims(token)
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token)
                 .getPayload().get("username", String.class);
     }
 
@@ -81,7 +81,7 @@ public class JWTUtil {
         String type = isAccess ? "access" : "refresh";
 
         return Jwts.builder()
-                .claim("sub", username)
+                .claim("username", username)
                 .claim("role", role)
                 .claim("type", type)
                 .issuedAt(new Date(now))

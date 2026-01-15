@@ -11,6 +11,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import static org.mockito.BDDMockito.given;
 
 
@@ -35,6 +37,9 @@ public class UsersServiceTest {
     @Mock
     UserRepository userRepository;
 
+    @Mock
+    PasswordEncoder passwordEncoder;
+
     @Test
     void ユーザー登録時_既に存在するIDの場合_エラー発生() {
 
@@ -58,7 +63,7 @@ public class UsersServiceTest {
         UserRequestDto userRequestDto = new UserRequestDto();
         userRequestDto.setUsername("username");
         userRequestDto.setEmail("email");
-
+        given(passwordEncoder.encode(any())).willReturn("encodedPassword");
         given(userRepository.existByUsername(userRequestDto.getUsername()))
                 .willReturn(0);
 
@@ -77,8 +82,7 @@ public class UsersServiceTest {
         dto.setUsername("username");
 
         ArgumentCaptor<Users> usersCaptor = ArgumentCaptor.forClass(Users.class);
-
-
+        given(passwordEncoder.encode(any())).willReturn("encodedPassword");
         // when
         userService.addUser(dto);
 
