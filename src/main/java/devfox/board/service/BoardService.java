@@ -5,9 +5,9 @@ import devfox.board.dto.response.ResponseBoardDetailDto;
 import devfox.board.dto.response.ResponseBoardDto;
 import devfox.board.entity.Board;
 import devfox.board.entity.Users;
-import devfox.board.repository.BoardRepositoryJpa;
-import devfox.board.repository.UserRepository;
-import devfox.board.repository.UserRepositoryJpa;
+import devfox.board.repository.board.BoardRepositoryJpa;
+import devfox.board.repository.users.UserRepository;
+import devfox.board.repository.users.UserRepositoryJpa;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service

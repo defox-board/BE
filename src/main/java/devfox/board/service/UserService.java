@@ -5,7 +5,7 @@ import devfox.board.dto.response.UserResponseDto;
 import devfox.board.entity.UserRole;
 import devfox.board.entity.Users;
 import devfox.board.jwt.JwtService;
-import devfox.board.repository.UserRepository;
+import devfox.board.repository.users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

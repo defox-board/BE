@@ -1,15 +1,14 @@
 package devfox.board.entity;
 
+import devfox.board.dto.request.CreateComment;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @Getter
 @Entity
 @Table(name = "comment")
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +19,11 @@ public class Comment extends BaseEntity{
     private Long boardId;
     @Column(name = "user_id")
     private Long userId;
+
+    public void update(CreateComment dto) {
+
+        if (dto.getContent() != null) {
+            this.content = dto.getContent();
+        }
+    }
 }

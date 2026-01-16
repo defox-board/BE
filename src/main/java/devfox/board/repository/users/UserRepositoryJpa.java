@@ -1,4 +1,4 @@
-package devfox.board.repository;
+package devfox.board.repository.users;
 
 import devfox.board.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;

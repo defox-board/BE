@@ -8,7 +8,8 @@ import lombok.Setter;
 @Setter
 public class LoginRequest {
 
-    @Schema(example = "dongik9467@naver.com")
+    @Schema(example = "testuser")
     private String username;
+    @Schema(example = "123456")
     private String password;
 }
