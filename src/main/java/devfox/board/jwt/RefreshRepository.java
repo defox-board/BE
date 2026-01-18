@@ -102,7 +102,6 @@ public class RefreshRepository {
     public void deleteByCreatedDateBefore(LocalDateTime cutoff) {
 
         String sql = """
-                
                 DELETE 
                 FROM jwt_refresh_entity jre
                 WHERE jre.created_at < :cutoff
