@@ -5,15 +5,13 @@ import devfox.board.dto.response.ResponseBoardDetailDto;
 import devfox.board.dto.response.ResponseBoardDto;
 import devfox.board.entity.Board;
 import devfox.board.entity.Users;
-import devfox.board.repository.BoardRepositoryJpa;
-import devfox.board.repository.UserRepository;
-import devfox.board.repository.UserRepositoryJpa;
+import devfox.board.repository.board.BoardRepositoryJpa;
+import devfox.board.repository.users.UserRepository;
+import devfox.board.repository.users.UserRepositoryJpa;
 import devfox.board.service.BoardService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -43,6 +41,9 @@ public class BoardServiceTest {
     @InjectMocks
     BoardService boardService;
 
+    @Mock
+    UserRepository userRepository;
+
 
 
     @Test
@@ -52,6 +53,15 @@ public class BoardServiceTest {
         //given
         CreateBoardDto boardDto = createBoardDto();
         String username = "username";
+
+        Users users = Users.builder()
+                .id(1L)
+                .username(username)
+                .build();
+
+
+        given(userRepository.findByUsername(username))
+                .willReturn(Optional.of(users));
         //when
         boardService.save(boardDto,username);
         //then
@@ -65,6 +75,16 @@ public class BoardServiceTest {
             CreateBoardDto boardDto = createBoardDto();
             ArgumentCaptor<Board> boardCaptor = ArgumentCaptor.forClass(Board.class);
             String username = "username";
+
+
+            Users users = Users.builder()
+                    .id(1L)
+                    .username(username)
+                    .build();
+
+
+            given(userRepository.findByUsername(username))
+                    .willReturn(Optional.of(users));
 
             //when
         boardService.save(boardDto,username);

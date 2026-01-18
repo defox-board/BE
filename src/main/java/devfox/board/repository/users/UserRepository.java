@@ -1,4 +1,4 @@
-package devfox.board.repository;
+package devfox.board.repository.users;
 
 import devfox.board.dto.request.UserRequestDto;
 import devfox.board.entity.UserRole;
