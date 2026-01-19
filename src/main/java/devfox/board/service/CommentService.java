@@ -10,8 +10,10 @@ import devfox.board.repository.comment.CommentRepository;
 import devfox.board.repository.users.UserRepositoryJpa;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class CommentService {
 
 
 
+    @Transactional
     public void save(String username, CreateComment dto) {
 
 
@@ -49,6 +52,7 @@ public class CommentService {
 
     }
 
+    @Transactional(readOnly = true)
     public CursorResponse findByBoardId(Long boardId, Long cursorId, int size) {
 
 
@@ -69,5 +73,39 @@ public class CommentService {
                 .nextCursor(nextCursor)
                 .build();
     }
+
+    @Transactional
+    @Modifying
+    public void deleteById(String username, Long commentId) {
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("コメントを見つかりません"));
+
+        Users user = userRepositoryJpa.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("ユーザーを見つかりません"));
+
+        if (comment.getUserId() != user.getId()) {
+            throw new IllegalArgumentException("作成者のみ削除可能");
+        }
+        commentRepository.deleteById(commentId);
+    }
+
+    @Transactional
+    public void updateComment(String username, Long commentId, CreateComment dto) {
+
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new EntityNotFoundException("コメントを見つかりません"));
+
+        Users user = userRepositoryJpa.findByUsername(username)
+                .orElseThrow(() -> new EntityNotFoundException("ユーザーを見つかりません"));
+
+        if (comment.getUserId() != user.getId()) {
+            throw new IllegalArgumentException("作成者のみ修正可能");
+        }
+
+        comment.update(dto);
+    }
+
 
 }

@@ -74,6 +74,13 @@ public class   SecurityConfig {
                         logout.addLogoutHandler
                                 (new CustomLogoutHandler(jwtService, jwtUtil)));
 
+
+//        http
+//                .oauth2Login(oauth2 -> oauth2
+//                        .successHandler());
+
+
+
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
