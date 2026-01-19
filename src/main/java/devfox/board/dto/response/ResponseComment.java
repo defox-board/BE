@@ -14,6 +14,7 @@ public class ResponseComment {
 
         private Long commentId;
         private String username;
+        private String comment;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

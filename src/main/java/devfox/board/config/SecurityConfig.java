@@ -79,7 +79,7 @@ public class   SecurityConfig {
                         .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
                         .requestMatchers(HttpMethod.POST, "/user/exist", "/user","/login","/join").permitAll()
                         .requestMatchers("/user/**").permitAll()
-                        .requestMatchers("/board/**","/board").permitAll()
+//                        .requestMatchers("/board/**","/board").permitAll()
                         .anyRequest().authenticated()
                 );
 

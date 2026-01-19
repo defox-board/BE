@@ -2,8 +2,11 @@ package devfox.board.repository.comment;
 
 import devfox.board.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface CommentRepository extends JpaRepository<Comment,Long> , CommentRepositoryQuery{
+@Repository
+public interface CommentRepository extends JpaRepository<Comment,Long> ,
+        CommentRepositoryQuery{
 
 
 }

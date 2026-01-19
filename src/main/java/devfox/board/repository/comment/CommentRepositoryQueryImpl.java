@@ -29,8 +29,9 @@ public class CommentRepositoryQueryImpl implements CommentRepositoryQuery {
                                 CommentDto.class,
                                 comment.id,
                                 comment.content,
+                                users.username,
                                 comment.createdAt,
-                                users.username
+                                comment.updatedAt
                         )
                 )
                 .from(comment)
@@ -39,7 +40,7 @@ public class CommentRepositoryQueryImpl implements CommentRepositoryQuery {
                         comment.boardId.eq(boardId),
                         cursorId == null ? null : comment.id.lt(cursorId)
                 ).orderBy(comment.id.desc())
-                .limit(size+1)
+                .limit(size + 1)
                 .fetch();
 
         return result;

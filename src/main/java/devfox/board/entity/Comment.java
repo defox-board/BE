@@ -9,7 +9,6 @@ import lombok.*;
 @Getter
 @Entity
 @Table(name = "comment")
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

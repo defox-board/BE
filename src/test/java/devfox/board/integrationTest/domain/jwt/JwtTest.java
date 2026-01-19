@@ -4,6 +4,8 @@ import devfox.board.jwt.JWTUtil;
 import devfox.board.jwt.JwtService;
 import devfox.board.jwt.RefreshEntity;
 import devfox.board.jwt.RefreshRepository;
+import devfox.board.repository.comment.CommentRepository;
+import devfox.board.repository.comment.CommentRepositoryQueryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +32,8 @@ public class JwtTest {
     RefreshRepository refreshRepository;
     @MockitoBean
     JWTUtil jwtUtil;
-
+    @MockitoBean
+    CommentRepositoryQueryImpl commentRepository;
 
     @BeforeEach
     void setUp() {
