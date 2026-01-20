@@ -49,18 +49,15 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
-
     }
 
     @Transactional(readOnly = true)
     public CursorResponse findByBoardId(Long boardId, Long cursorId, int size) {
 
-
         boardRepositoryJpa.findById(boardId)
                 .orElseThrow(() -> new EntityNotFoundException("存在しない投稿"));
 
         List<CommentDto> commentList = commentRepository.findByBoardId(boardId, cursorId, size);
-
 
         boolean hasNext = commentList.size() > size;
 
