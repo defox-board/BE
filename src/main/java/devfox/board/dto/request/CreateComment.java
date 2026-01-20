@@ -1,6 +1,6 @@
 package devfox.board.dto.request;
 
-import devfox.board.entity.BaseEntity;
+import devfox.common.entity.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;

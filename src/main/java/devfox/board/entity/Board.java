@@ -1,6 +1,7 @@
 package devfox.board.entity;
 
 import devfox.board.dto.request.CreateBoardDto;
+import devfox.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @Entity
 @Getter
 @Builder
-public class Board extends BaseEntity{
+public class Board extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;

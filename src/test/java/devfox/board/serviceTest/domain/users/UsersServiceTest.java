@@ -1,10 +1,10 @@
 package devfox.board.serviceTest.domain.users;
 
-import devfox.board.dto.request.UserRequestDto;
-import devfox.board.entity.UserRole;
-import devfox.board.entity.Users;
-import devfox.board.repository.users.UserRepository;
-import devfox.board.service.UserService;
+import devfox.users.dto.UserRequestDto;
+import devfox.users.entity.UserRole;
+import devfox.users.entity.Users;
+import devfox.users.repository.UserRepository;
+import devfox.users.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
