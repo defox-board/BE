@@ -194,4 +194,31 @@ public class UserRepository {
         ).stream().findFirst();
         return result;
     }
+
+    public Optional<Users> findByUsernameAndIsSocial(String username, boolean isSocial) {
+
+
+        String sql = """
+                SELECT u
+                FROM users u
+                WHERE u.username = :username 
+                AND u.is_social = :isSocial
+                """;
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("username", username);
+        params.addValue("isSocial", isSocial);
+
+        Optional<Users> result = template.query(sql, params, (rs, ronNum) ->
+                Users.builder()
+                        .id(rs.getLong("id"))
+                        .isSocial(true)
+                        .isLock(rs.getBoolean("is_lock"))
+                        .email(rs.getString("email"))
+                        .profileImageKey(rs.getString("profile_image_key"))
+                        .userRole(UserRole.valueOf(rs.getString("role")))
+                        .build()
+
+        ).stream().findFirst();
+        return result;
+    }
 }

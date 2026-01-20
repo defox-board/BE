@@ -32,16 +32,36 @@ import java.util.List;
 
 @EnableWebSecurity
 @Configuration
-@RequiredArgsConstructor
 public class   SecurityConfig {
 
     private final AuthenticationConfiguration authenticationConfiguration;
     @Qualifier("LoginSuccessHandler")
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
+    @Qualifier("SocialSuccessHandler")
+    private final AuthenticationSuccessHandler socialSuccessHandler;
+
 
     private final JwtService jwtService;
 
     private final JWTUtil jwtUtil;
+
+    public SecurityConfig(
+            AuthenticationConfiguration authenticationConfiguration,
+            @Qualifier("loginSuccessHandler")
+                    AuthenticationSuccessHandler authenticationSuccessHandler,
+            @Qualifier("socialSuccessHandler")
+            AuthenticationSuccessHandler socialSuccessHandler,
+            JwtService jwtService, JWTUtil jwtUtil) {
+
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
+        this.socialSuccessHandler = socialSuccessHandler;
+        this.jwtService = jwtService;
+        this.jwtUtil = jwtUtil;
+
+
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -75,9 +95,9 @@ public class   SecurityConfig {
                                 (new CustomLogoutHandler(jwtService, jwtUtil)));
 
 
-//        http
-//                .oauth2Login(oauth2 -> oauth2
-//                        .successHandler());
+        http
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(socialSuccessHandler));
 
 
 

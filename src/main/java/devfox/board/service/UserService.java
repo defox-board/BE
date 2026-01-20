@@ -1,25 +1,43 @@
 package devfox.board.service;
 
 import devfox.board.dto.request.UserRequestDto;
+import devfox.board.dto.response.CustomOAuth2User;
 import devfox.board.dto.response.UserResponseDto;
+import devfox.board.entity.SocialProviderType;
 import devfox.board.entity.UserRole;
 import devfox.board.entity.Users;
 import devfox.board.jwt.JwtService;
 import devfox.board.repository.users.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
+
 
 import java.nio.file.AccessDeniedException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService extends DefaultOAuth2UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -58,6 +76,7 @@ public class UserService implements UserDetailsService {
         }
         return result;
     }
+
     // ユーザー情報更新
     // 本人のみが自分の情報を修正可能
     @Transactional
@@ -79,6 +98,7 @@ public class UserService implements UserDetailsService {
 
 
     }
+
     // Spring Security 認証用ユーザー取得
     @Override
     @Transactional(readOnly = true)
@@ -123,6 +143,72 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("ユーザーの情報が見つけないです"));
 
         return new UserResponseDto(username, users.getIsSocial(), users.getEmail());
+    }
+
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+
+
+        // 부모 메소드 호출
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+
+        // 데이터
+        Map<String, Object> attributes;
+        List<GrantedAuthority> authorities;
+
+        String username;
+        String role = UserRole.USER.name();
+        String email;
+        String nickname;
+
+        // provider 제공자별 데이터 획득
+        String registrationId = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
+        if (registrationId.equals(SocialProviderType.NAVER.name())) {
+
+            attributes = (Map<String, Object>) oAuth2User.getAttributes().get("response");
+            username = registrationId + "_" + attributes.get("id");
+            email = attributes.get("email").toString();
+
+        } else if (registrationId.equals(SocialProviderType.GOOGLE.name())) {
+
+            attributes = (Map<String, Object>) oAuth2User.getAttributes();
+            username = registrationId + "_" + attributes.get("sub");
+            email = attributes.get("email").toString();
+
+        } else {
+            throw new OAuth2AuthenticationException("지원하지 않는 소셜 로그인입니다.");
+        }
+
+        // 데이터베이스 조회 -> 존재하면 업데이트, 없으면 신규 가입
+        Optional<Users> entity = userRepository.findByUsernameAndIsSocial(username, true);
+        if (entity.isPresent()) {
+            // role 조회
+            role = entity.get().getUserRole().name();
+
+            // 기존 유저 업데이트
+            UserRequestDto dto = new UserRequestDto();
+            dto.setEmail(email);
+            entity.get().updateUser(dto);
+
+            userRepository.save(entity.get());
+        } else {
+            // 신규 유저 추가
+            Users newUserEntity = Users.builder()
+                    .username(username)
+                    .password("")
+                    .isLock(false)
+                    .isSocial(true)
+                    .socialProviderType(SocialProviderType.valueOf(registrationId))
+                    .userRole(UserRole.USER)
+                    .email(email)
+                    .build();
+
+            userRepository.save(newUserEntity);
+        }
+
+        authorities = List.of(new SimpleGrantedAuthority(role));
+
+        return new CustomOAuth2User(attributes, authorities, username);
 
     }
 }
