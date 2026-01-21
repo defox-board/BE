@@ -1,14 +1,14 @@
 package devfox.board.serviceTest.domain.board;
 
-import devfox.board.dto.request.CreateBoardDto;
-import devfox.board.dto.response.ResponseBoardDetailDto;
-import devfox.board.dto.response.ResponseBoardDto;
-import devfox.board.entity.Board;
-import devfox.users.entity.Users;
-import devfox.board.repository.board.BoardRepositoryJpa;
-import devfox.users.repository.UserRepository;
-import devfox.users.repository.UserRepositoryJpa;
-import devfox.board.service.BoardService;
+import devfox.board.board.dto.request.CreateBoardDto;
+import devfox.board.board.dto.response.ResponseBoardDetailDto;
+import devfox.board.board.dto.response.ResponseBoardDto;
+import devfox.board.board.entity.Board;
+import devfox.board.users.entity.Users;
+import devfox.board.board.repository.board.BoardRepositoryJpa;
+import devfox.board.users.repository.UserRepository;
+import devfox.board.users.repository.UserRepositoryJpa;
+import devfox.board.board.service.BoardService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

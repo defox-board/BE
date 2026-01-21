@@ -1,14 +1,16 @@
 package devfox.board.integrationTest.domain.jwt;
 
-import devfox.security.jwt.JWTUtil;
-import devfox.security.jwt.JwtService;
-import devfox.security.jwt.RefreshEntity;
-import devfox.security.jwt.RefreshRepository;
-import devfox.board.repository.comment.CommentRepositoryQueryImpl;
+import devfox.board.config.TestExternalConfig;
+import devfox.board.security.jwt.jwtutil;
+import devfox.board.security.jwt.JwtService;
+import devfox.board.security.jwt.RefreshEntity;
+import devfox.board.security.jwt.RefreshRepository;
+import devfox.board.board.repository.comment.CommentRepositoryQueryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -23,6 +25,7 @@ import static org.mockito.Mockito.verify;
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
+@Import({TestExternalConfig.class})
 public class JwtTest {
 
     @Autowired
@@ -30,7 +33,7 @@ public class JwtTest {
     @Autowired
     RefreshRepository refreshRepository;
     @MockitoBean
-    JWTUtil jwtUtil;
+    jwtutil jwtUtil;
     @MockitoBean
     CommentRepositoryQueryImpl commentRepository;
 

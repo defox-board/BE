@@ -1,15 +1,15 @@
 package devfox.board.serviceTest.domain.comment;
 
-import devfox.board.dto.request.CreateComment;
-import devfox.board.dto.response.CommentDto;
-import devfox.board.dto.response.CursorResponse;
-import devfox.board.entity.Board;
-import devfox.users.entity.UserRole;
-import devfox.users.entity.Users;
-import devfox.board.repository.board.BoardRepositoryJpa;
-import devfox.board.repository.comment.CommentRepository;
-import devfox.users.repository.UserRepositoryJpa;
-import devfox.board.service.CommentService;
+import devfox.board.board.dto.request.CreateComment;
+import devfox.board.board.dto.response.CommentDto;
+import devfox.board.board.dto.response.CursorResponse;
+import devfox.board.board.entity.Board;
+import devfox.board.users.entity.UserRole;
+import devfox.board.users.entity.Users;
+import devfox.board.board.repository.board.BoardRepositoryJpa;
+import devfox.board.board.repository.comment.CommentRepository;
+import devfox.board.users.repository.UserRepositoryJpa;
+import devfox.board.board.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import devfox.board.entity.Comment;
+import devfox.board.board.entity.Comment;
 
 import java.util.List;
 import java.util.Optional;
