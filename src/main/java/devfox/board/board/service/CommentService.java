@@ -1,6 +1,7 @@
 package devfox.board.board.service;
 
 import devfox.board.board.dto.request.CreateComment;
+import devfox.board.board.dto.request.UpdateComment;
 import devfox.board.board.dto.response.CommentDto;
 import devfox.board.board.dto.response.CursorResponse;
 import devfox.board.board.entity.Comment;
@@ -88,7 +89,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void updateComment(String username, Long commentId, CreateComment dto) {
+    public void updateComment(String username, Long commentId, UpdateComment dto) {
 
 
         Comment comment = commentRepository.findById(commentId)

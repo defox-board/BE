@@ -1,6 +1,7 @@
 package devfox.board.board.entity;
 
 import devfox.board.board.dto.request.CreateComment;
+import devfox.board.board.dto.request.UpdateComment;
 import devfox.board.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +22,7 @@ public class Comment extends BaseEntity {
     @Column(name = "user_id")
     private Long userId;
 
-    public void update(CreateComment dto) {
+    public void update(UpdateComment dto) {
 
         if (dto.getContent() != null) {
             this.content = dto.getContent();

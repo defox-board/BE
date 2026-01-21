@@ -1,6 +1,7 @@
 package devfox.board.board.controller;
 
 import devfox.board.board.dto.request.CreateComment;
+import devfox.board.board.dto.request.UpdateComment;
 import devfox.board.board.dto.response.CursorResponse;
 import devfox.board.board.dto.response.ResponseComment;
 import devfox.board.board.service.CommentService;
@@ -50,7 +51,7 @@ public class CommentController {
     @Operation(summary = "コメント修正")
     @PutMapping("/{commentId}")
     public ResponseEntity<String> updateComment(Authentication authentication,
-                                                @RequestBody CreateComment dto,
+                                                @RequestBody UpdateComment dto,
                                                 @PathVariable("commentId") Long commentId) {
 
         commentService.updateComment(authentication.getName(),commentId,dto);

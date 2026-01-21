@@ -1,6 +1,7 @@
 package devfox.board.serviceTest.domain.comment;
 
 import devfox.board.board.dto.request.CreateComment;
+import devfox.board.board.dto.request.UpdateComment;
 import devfox.board.board.dto.response.CommentDto;
 import devfox.board.board.dto.response.CursorResponse;
 import devfox.board.board.entity.Board;
@@ -275,8 +276,7 @@ public class CommentServiceTest {
 
         //given
 
-        CreateComment dto = new CreateComment();
-        dto.setBoardId(1L);
+        UpdateComment dto = new UpdateComment();
         dto.setContent("changeContent");
 
         Users users = Users.builder()
