@@ -6,6 +6,7 @@ import devfox.board.board.dto.response.ResponseBoardDto;
 import devfox.board.board.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,25 +14,43 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.data.domain.Sort.Direction.DESC;
+
+@Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/boards")
 public class BoardController {
 
     private final BoardService boardService;
 
     //掲示板の全体一覧取得APIにページング処理を実装
-    @Operation(summary = "掲示板全体一覧取得",description = "掲示板の全体一覧取得APIにページング処理を実装")
-    @GetMapping("/boards")
-    public Page<ResponseBoardDto> getAllBoards(
-            @PageableDefault(page = 0, size = 20, sort = "createdAt")
+    @Operation(summary = "掲示板全体一覧取得", description = "掲示板の全体一覧取得APIにページング処理を実装")
+    @GetMapping
+    public ResponseEntity<Page<ResponseBoardDto>> getAllBoards(
+            @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = DESC)
             Pageable pageable) {
 
+        log.info("게시판 페이징 호출");
 
-        return boardService.getAllBoard(pageable);
+        return ResponseEntity.ok(boardService.getAllBoard(pageable));
     }
+
+    @Operation(summary = "掲示板全体一覧取得 BY JDBC")
+    @GetMapping("/byJDBC")
+    public ResponseEntity<Page<ResponseBoardDto>> getAllBoardsByJDBC(
+            @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = DESC)
+                                                     Pageable pageable
+    ) {
+        return ResponseEntity.ok(boardService.getAllBoardBySql(pageable));
+
+    }
+
+
+
     //投稿を保存するAPIを実装
-    @Operation(summary = "投稿を保存する",description = "投稿を保存するAPIを実装")
-    @PostMapping("/board")
+    @Operation(summary = "投稿を保存する", description = "投稿を保存するAPIを実装")
+    @PostMapping
     public ResponseEntity<?> saveBoard(Authentication authentication,
                                        @RequestBody CreateBoardDto dto) {
 
@@ -45,7 +64,7 @@ public class BoardController {
                 該当する投稿の詳細情報を取得するAPI を実装
             
             """)
-    @GetMapping("/boards/{boardId}")
+    @GetMapping("/{boardId}")
     public ResponseEntity<ResponseBoardDetailDto> getBoardById(@PathVariable("boardId") Long boardId) {
         return ResponseEntity.ok(boardService.getBoardById(boardId));
     }
@@ -56,7 +75,7 @@ public class BoardController {
                 対象となる投稿を削除する 削除API を実装
             
             """)
-    @DeleteMapping("/boards/{boardId}")
+    @DeleteMapping("/{boardId}")
     public ResponseEntity<String> deleteById(@PathVariable("boardId") Long boardId,
                                              Authentication authentication) {
         boardService.deleteById(boardId, authentication.getName());
@@ -69,13 +88,23 @@ public class BoardController {
             フロントエンドから DTO と boardId を受け取り、
              指定された投稿内容を更新する 投稿修正API を実装
             """)
-    @PutMapping("/boards/{boardId}")
+    @PutMapping("/{boardId}")
     public ResponseEntity<String> updateById(@PathVariable("boardId") Long boardId,
                                              @RequestBody CreateBoardDto dto,
                                              Authentication authentication) {
 
         boardService.update(dto, authentication.getName());
         return ResponseEntity.ok("update完了");
+    }
+
+    @GetMapping("/findByUser")
+    public ResponseEntity<Page<ResponseBoardDto>> findByUser(Authentication authentication,
+                                                             @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = DESC)
+                                                             Pageable pageable) {
+
+
+        Page<ResponseBoardDto> result = boardService.findByUser(pageable, authentication.getName());
+        return ResponseEntity.ok(result);
     }
 
 }

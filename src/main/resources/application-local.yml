@@ -8,6 +8,13 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+
+
+  data:
+    web:
+      pageable:
+        max-page-size: 20000
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,6 +22,9 @@ spring:
       hibernate:
         format_sql: true
       show_sql: true
+
+
+
 
     sql:
       init:
@@ -46,3 +56,7 @@ jwt:
   accessTokenExpiresIn: 3600000
   refreshTokenExpiresIn: 604800000
 
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace

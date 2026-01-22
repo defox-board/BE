@@ -4,13 +4,16 @@ import devfox.board.board.dto.request.CreateBoardDto;
 import devfox.board.board.dto.response.ResponseBoardDetailDto;
 import devfox.board.board.dto.response.ResponseBoardDto;
 import devfox.board.board.entity.Board;
+import devfox.board.board.repository.board.BoardRepositoryJDBC;
 import devfox.board.users.entity.Users;
 import devfox.board.board.repository.board.BoardRepositoryJpa;
 import devfox.board.users.repository.UserRepository;
 import devfox.board.users.repository.UserRepositoryJpa;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,9 +25,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BoardService {
 
     private final BoardRepositoryJpa boardRepositoryJpa;
+    private final BoardRepositoryJDBC boardRepositoryJDBC;
     private final UserRepository userRepository;
     private final UserRepositoryJpa userRepositoryJpa;
     /**
@@ -91,6 +96,9 @@ public class BoardService {
     @Transactional(readOnly = true)
     public Page<ResponseBoardDto> getAllBoard(Pageable pageable) {
 
+        log.info("게시판 조회 페이징 서비스 호출");
+
+
         Page<Board> all = boardRepositoryJpa.findAll(pageable);
         List<Long> userIdList = all.stream().map(Board::getUserId).toList();
 
@@ -109,7 +117,6 @@ public class BoardService {
                             .createdAt(ent.getCreatedAt())
                             .updatedAt(ent.getUpdatedAt())
                             .title(ent.getTitle())
-                            .content(ent.getContent())
                             .username(users.getUsername())
                             .userId(users.getId())
                             .build();
@@ -118,8 +125,11 @@ public class BoardService {
     }
 
     public Page<ResponseBoardDto> getAllBoardBySql(Pageable pageable) {
-        // JDBC SQL로 작업 예정
-        return null;
+        List<ResponseBoardDto> result = boardRepositoryJDBC.findAll(pageable);
+        long totalCount = boardRepositoryJpa.count();
+
+        return new PageImpl<>(result, pageable,totalCount);
+
     }
 
 
@@ -141,5 +151,19 @@ public class BoardService {
                 .createdAt(board.getCreatedAt())
                 .updatedAt(board.getUpdatedAt())
                 .build();
+    }
+
+    public Page<ResponseBoardDto> findByUser(Pageable pageable,String username) {
+
+
+        Users users = userRepositoryJpa.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("ユーザーを見つかりません"));
+
+
+        List<ResponseBoardDto> result = boardRepositoryJDBC.findByUser(pageable, users.getId());
+        long totalCount = boardRepositoryJpa.count();
+
+        return new PageImpl<>(result, pageable, totalCount);
+
     }
 }

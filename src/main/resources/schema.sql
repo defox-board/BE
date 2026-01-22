@@ -24,6 +24,10 @@ CREATE TABLE IF NOT EXISTS board(
 );
 
 
+--create index idx_board_user_created on board(user_id,created_at);
+--create index idx_board_created_at on board(created_at desc);
+
+
 CREATE TABLE IF NOT EXISTS comment (
 
  id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -50,3 +54,5 @@ CREATE TABLE IF NOT EXISTS jwt_refresh_entity(
 
 
 
+create index idx_board_user_created on board(user_id,created_at);
+create index idx_board_created_at on board(created_at desc);
