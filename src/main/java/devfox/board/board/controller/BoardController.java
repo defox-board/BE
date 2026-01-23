@@ -40,12 +40,11 @@ public class BoardController {
     @GetMapping("/byJDBC")
     public ResponseEntity<Page<ResponseBoardDto>> getAllBoardsByJDBC(
             @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = DESC)
-                                                     Pageable pageable
+            Pageable pageable
     ) {
         return ResponseEntity.ok(boardService.getAllBoardBySql(pageable));
 
     }
-
 
 
     //投稿を保存するAPIを実装
@@ -57,9 +56,10 @@ public class BoardController {
         boardService.save(dto, authentication.getName());
         return ResponseEntity.ok("作成完了");
     }
+
     //フロントエンドから受け取った boardId を基に、
     //該当する投稿の詳細情報を取得するAPI を実装
-    @Operation(summary = "掲示板詳細情報一つ取得",description = """
+    @Operation(summary = "掲示板詳細情報一つ取得", description = """
              フロントエンドから受け取った boardId を基に、
                 該当する投稿の詳細情報を取得するAPI を実装
             
@@ -68,9 +68,10 @@ public class BoardController {
     public ResponseEntity<ResponseBoardDetailDto> getBoardById(@PathVariable("boardId") Long boardId) {
         return ResponseEntity.ok(boardService.getBoardById(boardId));
     }
+
     //フロントエンドから受け取った boardId を基に、
     //対象となる投稿を削除する 削除API を実装
-    @Operation(summary = "投稿削除",description = """
+    @Operation(summary = "投稿削除", description = """
             フロントエンドから受け取った boardId を基に、
                 対象となる投稿を削除する 削除API を実装
             
@@ -82,9 +83,10 @@ public class BoardController {
 
         return ResponseEntity.ok("削除完了");
     }
+
     //フロントエンドから DTO と boardId を受け取り、
     //指定された投稿内容を更新する 投稿修正API を実装
-    @Operation(summary = "投稿修正",description = """
+    @Operation(summary = "投稿修正", description = """
             フロントエンドから DTO と boardId を受け取り、
              指定された投稿内容を更新する 投稿修正API を実装
             """)
@@ -97,6 +99,10 @@ public class BoardController {
         return ResponseEntity.ok("update完了");
     }
 
+
+    @Operation(summary = "ユーザーの作成掲示板",description = """
+             ユーザーが作成した掲示板を取得
+            """)
     @GetMapping("/findByUser")
     public ResponseEntity<Page<ResponseBoardDto>> findByUser(Authentication authentication,
                                                              @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = DESC)
@@ -107,4 +113,18 @@ public class BoardController {
         return ResponseEntity.ok(result);
     }
 
+
+    @Operation(summary = "掲示板検索",description = """
+               タイトルを検索して該当する、
+                    掲示板の投稿を取得する
+            """)
+    @GetMapping("/findBySearchLike")
+    public ResponseEntity<Page<ResponseBoardDto>> findBySearchLike(
+            @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = DESC)
+                                                                   Pageable pageable,
+                                                                   @RequestParam String keyword) {
+
+        Page<ResponseBoardDto> result = boardService.findBySearchingByLike(pageable, keyword);
+        return ResponseEntity.ok(result);
+    }
 }

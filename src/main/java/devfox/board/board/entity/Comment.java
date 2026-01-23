@@ -22,6 +22,9 @@ public class Comment extends BaseEntity {
     @Column(name = "user_id")
     private Long userId;
 
+    /*
+    コメント修正 Method
+     */
     public void update(UpdateComment dto) {
 
         if (dto.getContent() != null) {

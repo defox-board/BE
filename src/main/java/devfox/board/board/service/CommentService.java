@@ -30,6 +30,7 @@ public class CommentService {
 
 
     @Transactional
+    //DTOでコメント情報を受け取り、保存する
     public void save(String username, CreateComment dto) {
 
 
@@ -51,7 +52,7 @@ public class CommentService {
 
         commentRepository.save(comment);
     }
-
+    //該当する投稿のコメント一覧を取得する（カーソル方式）
     @Transactional(readOnly = true)
     public CursorResponse findByBoardId(Long boardId, Long cursorId, int size) {
 
@@ -74,6 +75,7 @@ public class CommentService {
 
     @Transactional
     @Modifying
+    //コメントIDを受け取り、該当コメントを削除する
     public void deleteById(String username, Long commentId) {
 
         Comment comment = commentRepository.findById(commentId)
@@ -87,7 +89,7 @@ public class CommentService {
         }
         commentRepository.deleteById(commentId);
     }
-
+    //コメント内容を修正する
     @Transactional
     public void updateComment(String username, Long commentId, UpdateComment dto) {
 

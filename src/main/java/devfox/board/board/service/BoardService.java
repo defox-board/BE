@@ -92,6 +92,7 @@ public class BoardService {
      * 掲示板とユーザー情報の結合が必要
      * SQLのJOINは使用せず、コード上で結合処理を実装
      * 将来的にSQL JOIN方式との性能比較を行う予定
+     * データ2万件基準で2.5秒 <<
      */
     @Transactional(readOnly = true)
     public Page<ResponseBoardDto> getAllBoard(Pageable pageable) {
@@ -123,7 +124,10 @@ public class BoardService {
         });
         return result;
     }
-
+    /*
+    掲示板の全件取得（ページング処理）
+    データ2万件基準で0.5秒
+     */
     public Page<ResponseBoardDto> getAllBoardBySql(Pageable pageable) {
         List<ResponseBoardDto> result = boardRepositoryJDBC.findAll(pageable);
         long totalCount = boardRepositoryJpa.count();
@@ -153,6 +157,9 @@ public class BoardService {
                 .build();
     }
 
+    /**
+     * ユーザーが作成した掲示板を取得
+     */
     public Page<ResponseBoardDto> findByUser(Pageable pageable,String username) {
 
 
@@ -165,5 +172,19 @@ public class BoardService {
 
         return new PageImpl<>(result, pageable, totalCount);
 
+    }
+
+    /**
+     * タイトルで検索して、
+     * 該当する掲示板の投稿を取得する。
+     */
+    public Page<ResponseBoardDto> findBySearchingByLike(Pageable pageable,String keyword) {
+
+        List<ResponseBoardDto> result =
+                boardRepositoryJDBC.findBySearchByLike(pageable, keyword);
+
+        long count = boardRepositoryJpa.count();
+
+        return new PageImpl<>(result, pageable, count);
     }
 }

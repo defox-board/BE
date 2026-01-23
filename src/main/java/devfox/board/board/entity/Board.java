@@ -23,6 +23,10 @@ public class Board extends BaseEntity {
     private Long userId;
 
 
+
+    /*
+    掲示板修正 Method
+     */
     public void update(CreateBoardDto dto) {
 
         if (dto.getContent() != null) {
