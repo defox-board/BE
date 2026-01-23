@@ -1,6 +1,6 @@
 package devfox.board.security.handler;
 
-import devfox.board.security.jwt.jwtutil;
+import devfox.board.security.jwt.JwtUtil;
 import devfox.board.security.jwt.JwtService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtService jwtService;
-    private final jwtutil jwtUtil;
+    private final JwtUtil jwtUtil;
 
 
     @Override

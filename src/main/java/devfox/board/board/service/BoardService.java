@@ -118,6 +118,7 @@ public class BoardService {
                             .createdAt(ent.getCreatedAt())
                             .updatedAt(ent.getUpdatedAt())
                             .title(ent.getTitle())
+                            .content(ent.getContent())
                             .username(users.getUsername())
                             .userId(users.getId())
                             .build();

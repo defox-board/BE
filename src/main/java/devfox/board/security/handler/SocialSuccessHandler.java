@@ -1,6 +1,6 @@
 package devfox.board.security.handler;
 
-import devfox.board.security.jwt.jwtutil;
+import devfox.board.security.jwt.JwtUtil;
 import devfox.board.security.jwt.JwtService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -19,9 +19,9 @@ public class SocialSuccessHandler implements AuthenticationSuccessHandler {
 
 
     private final JwtService jwtService;
-    private final jwtutil jwtUtil;
+    private final JwtUtil jwtUtil;
 
-    public SocialSuccessHandler(JwtService jwtService, jwtutil jwtUtil) {
+    public SocialSuccessHandler(JwtService jwtService, JwtUtil jwtUtil) {
         this.jwtService = jwtService;
         this.jwtUtil = jwtUtil;
     }

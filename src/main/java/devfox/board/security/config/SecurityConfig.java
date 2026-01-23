@@ -3,14 +3,13 @@ package devfox.board.security.config;
 import devfox.board.users.entity.UserRole;
 import devfox.board.security.handler.CustomLogoutHandler;
 import devfox.board.security.jwt.JWTFilter;
-import devfox.board.security.jwt.jwtutil;
+import devfox.board.security.jwt.JwtUtil;
 import devfox.board.security.jwt.JwtService;
 import devfox.board.security.jwt.LoginFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,7 +41,7 @@ public class   SecurityConfig {
 
     private final JwtService jwtService;
 
-    private final jwtutil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     public SecurityConfig(
             AuthenticationConfiguration authenticationConfiguration,
@@ -50,7 +49,7 @@ public class   SecurityConfig {
                     AuthenticationSuccessHandler authenticationSuccessHandler,
             @Qualifier("socialSuccessHandler")
             AuthenticationSuccessHandler socialSuccessHandler,
-            JwtService jwtService, jwtutil jwtUtil) {
+            JwtService jwtService, JwtUtil jwtUtil) {
 
         this.authenticationConfiguration = authenticationConfiguration;
         this.authenticationSuccessHandler = authenticationSuccessHandler;

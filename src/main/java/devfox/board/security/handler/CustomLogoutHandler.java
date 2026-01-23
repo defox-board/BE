@@ -2,7 +2,7 @@ package devfox.board.security.handler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import devfox.board.security.jwt.jwtutil;
+import devfox.board.security.jwt.JwtUtil;
 import devfox.board.security.jwt.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 public class CustomLogoutHandler implements LogoutHandler {
 
     private final JwtService jwtService;
-    private final jwtutil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {

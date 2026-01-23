@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-public class jwtutil {
+public class JwtUtil {
 
     private SecretKey secretKey;
 
@@ -29,7 +29,7 @@ public class jwtutil {
 
 
 
-    public jwtutil(@Value("${jwt.secret}") String secret) {
+    public JwtUtil(@Value("${jwt.secret}") String secret) {
 
         if (secret == null || secret.length() < 32) {
             throw new IllegalArgumentException

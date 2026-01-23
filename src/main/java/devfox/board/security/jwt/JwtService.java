@@ -15,7 +15,7 @@ public class JwtService {
 
     private final RefreshRepository refreshRepository;
     private final RefreshRepositoryJPA refreshRepositoryJPA;
-    private final jwtutil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void addRefresh(String username, String refreshToken) {

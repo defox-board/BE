@@ -1,7 +1,7 @@
 package devfox.board.integrationTest.domain.jwt;
 
 import devfox.board.config.TestExternalConfig;
-import devfox.board.security.jwt.jwtutil;
+import devfox.board.security.jwt.JwtUtil;
 import devfox.board.security.jwt.JwtService;
 import devfox.board.security.jwt.RefreshEntity;
 import devfox.board.security.jwt.RefreshRepository;
@@ -33,7 +33,7 @@ public class JwtTest {
     @Autowired
     RefreshRepository refreshRepository;
     @MockitoBean
-    jwtutil jwtUtil;
+    JwtUtil jwtUtil;
     @MockitoBean
     CommentRepositoryQueryImpl commentRepository;
 
