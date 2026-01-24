@@ -178,14 +178,34 @@ public class BoardService {
     /**
      * タイトルで検索して、
      * 該当する掲示板の投稿を取得する。
+     * %LIKE% 方式
      */
     public Page<ResponseBoardDto> findBySearchingByLike(Pageable pageable,String keyword) {
 
         List<ResponseBoardDto> result =
                 boardRepositoryJDBC.findBySearchByLike(pageable, keyword);
 
-        long count = boardRepositoryJpa.count();
+        long totalCount = boardRepositoryJpa.count();
 
-        return new PageImpl<>(result, pageable, count);
+        return new PageImpl<>(result, pageable, totalCount);
     }
+
+
+    /**
+     *
+     * タイトルで検索して
+     * 該当する掲示板を取得する
+     * FULLTEXT 方式
+     */
+    public Page<ResponseBoardDto> findBySearchByFullText(Pageable pageable, String keyword) {
+
+        List<ResponseBoardDto> result =
+                boardRepositoryJDBC.findBySearchByMatchAgainst(pageable, keyword);
+
+        long totalCount = boardRepositoryJpa.count();
+        return new PageImpl<>(result, pageable, totalCount);
+
+    }
+
+
 }

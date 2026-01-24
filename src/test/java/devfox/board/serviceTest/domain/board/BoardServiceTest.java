@@ -4,6 +4,7 @@ import devfox.board.board.dto.request.CreateBoardDto;
 import devfox.board.board.dto.response.ResponseBoardDetailDto;
 import devfox.board.board.dto.response.ResponseBoardDto;
 import devfox.board.board.entity.Board;
+import devfox.board.board.repository.board.BoardRepositoryJDBC;
 import devfox.board.users.entity.Users;
 import devfox.board.board.repository.board.BoardRepositoryJpa;
 import devfox.board.users.repository.UserRepository;
@@ -42,8 +43,10 @@ public class BoardServiceTest {
     BoardService boardService;
 
     @Mock
-    UserRepository userRepository;
+    BoardRepositoryJDBC boardRepositoryJDBC;
 
+    @Mock
+    UserRepository userRepository;
 
 
     @Test
@@ -63,117 +66,118 @@ public class BoardServiceTest {
         given(userRepository.findByUsername(username))
                 .willReturn(Optional.of(users));
         //when
-        boardService.save(boardDto,username);
+        boardService.save(boardDto, username);
         //then
         verify(boardRepositoryJpa, times(1)).save(any(Board.class));
-        }
+    }
 
-        @Test
-        void 投稿作成_エンティティにDTOが正常に登録() {
+    @Test
+    void 投稿作成_エンティティにDTOが正常に登録() {
 
         //given
-            CreateBoardDto boardDto = createBoardDto();
-            ArgumentCaptor<Board> boardCaptor = ArgumentCaptor.forClass(Board.class);
-            String username = "username";
+        CreateBoardDto boardDto = createBoardDto();
+        ArgumentCaptor<Board> boardCaptor = ArgumentCaptor.forClass(Board.class);
+        String username = "username";
 
 
-            Users users = Users.builder()
-                    .id(1L)
-                    .username(username)
-                    .build();
+        Users users = Users.builder()
+                .id(1L)
+                .username(username)
+                .build();
 
 
-            given(userRepository.findByUsername(username))
-                    .willReturn(Optional.of(users));
+        given(userRepository.findByUsername(username))
+                .willReturn(Optional.of(users));
 
-            //when
-        boardService.save(boardDto,username);
+        //when
+        boardService.save(boardDto, username);
 
         //then
-            verify(boardRepositoryJpa, times(1)).save(boardCaptor.capture());
-            Board value = boardCaptor.getValue();
-            assertThat(value.getContent()).isEqualTo(boardDto.getContent());
-            assertThat(value.getTitle()).isEqualTo(boardDto.getTitle());
+        verify(boardRepositoryJpa, times(1)).save(boardCaptor.capture());
+        Board value = boardCaptor.getValue();
+        assertThat(value.getContent()).isEqualTo(boardDto.getContent());
+        assertThat(value.getTitle()).isEqualTo(boardDto.getTitle());
 
 
-        }
-        @Test
-        void 掲示板_全件_取得_DB呼び出し_正常() {
+    }
 
-            //given
+    @Test
+    void 掲示板_全件_取得_DB呼び出し_正常() {
 
-            Users user = Users.builder()
-                    .id(1L)
+        //given
 
-                    .build();
+        Users user = Users.builder()
+                .id(1L)
+
+                .build();
 
 
-            Board build = Board.builder()
-                    .title("title")
-                    .userId(1L)
-                    .content("content")
-                    .build();
+        Board build = Board.builder()
+                .title("title")
+                .userId(1L)
+                .content("content")
+                .build();
 
-            Board build2 = Board.builder()
-                    .title("title2")
-                    .userId(1L)
-                    .content("content2")
-                    .build();
+        Board build2 = Board.builder()
+                .title("title2")
+                .userId(1L)
+                .content("content2")
+                .build();
 
-            PageRequest pageRequest = PageRequest.of(0, 10);
+        PageRequest pageRequest = PageRequest.of(0, 10);
 
-            PageImpl<Board> boardPage = new PageImpl<>(List.of(build, build2), pageRequest, 2);
-            given(boardRepositoryJpa.findAll(pageRequest))
-                    .willReturn(boardPage);
+        PageImpl<Board> boardPage = new PageImpl<>(List.of(build, build2), pageRequest, 2);
+        given(boardRepositoryJpa.findAll(pageRequest))
+                .willReturn(boardPage);
 
-            given(userRepositoryJpa.findAllByUserIdOfBoard(any()))
-                    .willReturn(List.of(user));
+        given(userRepositoryJpa.findAllByUserIdOfBoard(any()))
+                .willReturn(List.of(user));
 
-            //when
+        //when
 
-            Page<ResponseBoardDto> result = boardService.getAllBoard(pageRequest);
-            //then
-            assertThat(result).hasSize(2);
-            assertThat(result)
-                    .extracting(ResponseBoardDto::getContent)
-                    .containsExactlyInAnyOrder("content", "content2");
+        Page<ResponseBoardDto> result = boardService.getAllBoard(pageRequest);
+        //then
+        assertThat(result).hasSize(2);
+        assertThat(result)
+                .extracting(ResponseBoardDto::getContent)
+                .containsExactlyInAnyOrder("content", "content2");
 
-            assertThat(result.getContent().get(0).getUserId())
-                    .isEqualTo(user.getId());
-            }
+        assertThat(result.getContent().get(0).getUserId())
+                .isEqualTo(user.getId());
+    }
 
-            @Test
-            void 掲示板_単件取得時_存在しない_掲示板ID_エラー発生() {
+    @Test
+    void 掲示板_単件取得時_存在しない_掲示板ID_エラー発生() {
 
-                //given
+        //given
 
-                Long wrongId = 1L;
-                given(boardRepositoryJpa.findById(wrongId))
-                        .willReturn(Optional.empty());
+        Long wrongId = 1L;
+        given(boardRepositoryJpa.findById(wrongId))
+                .willReturn(Optional.empty());
 
-                // when & then
-                assertThatThrownBy(()-> boardService.getBoardById(wrongId))
-                        .hasMessageContaining("投稿が見つかりません");
+        // when & then
+        assertThatThrownBy(() -> boardService.getBoardById(wrongId))
+                .hasMessageContaining("投稿が見つかりません");
 
-            }
+    }
 
-            @Test
-            void 掲示板_単件取得時_存在しない_作成者_エラー発生() {
+    @Test
+    void 掲示板_単件取得時_存在しない_作成者_エラー発生() {
 
-                //given
-                Long boardId = 1L;
-                given(boardRepositoryJpa.findById(boardId))
-                        .willReturn(Optional.of(Board.
-                                builder()
-                                .userId(1L)
-                                .build()));
-                given(userRepositoryJpa.findById(1L))
-                        .willReturn(Optional.empty());
+        //given
+        Long boardId = 1L;
+        given(boardRepositoryJpa.findById(boardId))
+                .willReturn(Optional.of(Board.
+                        builder()
+                        .userId(1L)
+                        .build()));
+        given(userRepositoryJpa.findById(1L))
+                .willReturn(Optional.empty());
 
-                //when
-                assertThatThrownBy(() -> boardService.getBoardById(boardId))
-                        .hasMessageContaining("ユーザーを見つかりません");
-            }
+        //when
+        assertThatThrownBy(() -> boardService.getBoardById(boardId))
+                .hasMessageContaining("ユーザーを見つかりません");
+    }
 
 
     @Test
@@ -227,7 +231,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(users));
 
         //when
-        boardService.deleteById(board.getId(),users.getUsername());
+        boardService.deleteById(board.getId(), users.getUsername());
 
         //then
 
@@ -274,7 +278,7 @@ public class BoardServiceTest {
 
         //when & then
         assertThatThrownBy(() ->
-                boardService.deleteById(wrongId,username)
+                boardService.deleteById(wrongId, username)
         ).hasMessageContaining("存在しない掲示板");
     }
 
@@ -373,10 +377,8 @@ public class BoardServiceTest {
                 .build();
 
 
-
         given(boardRepositoryJpa.findById(createBoardDto.getId()))
                 .willReturn(Optional.empty());
-
 
 
         //when & then
@@ -389,11 +391,76 @@ public class BoardServiceTest {
 
 
 
+    @Test
+    void 掲示板_title_検索して＿該当する_掲示板_取得() {
+
+        //given
+
+        Board board1 = Board.builder()
+                .title("title")
+                .build();
+
+        Board board2 = Board.builder()
+                .title("title2")
+                .build();
+
+        ResponseBoardDto dto1 = ResponseBoardDto.builder()
+                .title("title")
+                .build();
+
+
+        ResponseBoardDto dto2 = ResponseBoardDto.builder()
+                .title("title2")
+                .build();
+
+        PageRequest pageRequest = PageRequest.of(1, 2);
+
+
+        given(boardRepositoryJDBC.findBySearchByLike(pageRequest, "title"))
+                .willReturn(List.of(dto1, dto2));
+
+        given(boardRepositoryJpa.count()).willReturn(2L);
+
+        //when
+
+        Page<ResponseBoardDto> result = boardService.findBySearchingByLike(pageRequest, "title");
+
+
+        //then
+        assertThat(result).hasSize(2);
+        assertThat(result.getContent().get(0).getTitle()).isEqualTo("title");
+
+
+    }
 
 
 
 
+    @Test
+    void 掲示板_title_検索して＿該当する_掲示板がない場合_Empty() {
 
+        //given
+
+
+
+        PageRequest pageRequest = PageRequest.of(1, 2);
+
+
+        given(boardRepositoryJDBC.findBySearchByLike(pageRequest, "title"))
+                .willReturn(List.of());
+
+        given(boardRepositoryJpa.count()).willReturn(0L);
+
+        //when
+
+        Page<ResponseBoardDto> result = boardService.findBySearchingByLike(pageRequest, "title");
+
+
+        //then
+        assertThat(result).hasSize(0);
+
+
+    }
 
     private static CreateBoardDto createBoardDto() {
         CreateBoardDto createBoardDto = new CreateBoardDto();
@@ -401,5 +468,6 @@ public class BoardServiceTest {
         createBoardDto.setContent("content");
         return createBoardDto;
     }
+
 
 }

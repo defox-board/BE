@@ -56,3 +56,4 @@ CREATE TABLE IF NOT EXISTS jwt_refresh_entity(
 
 create index idx_board_user_created on board(user_id,created_at);
 create index idx_board_created_at on board(created_at desc);
+create fulltext index idx_board_title on board(title);

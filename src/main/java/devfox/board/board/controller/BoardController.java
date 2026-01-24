@@ -116,7 +116,8 @@ public class BoardController {
 
     @Operation(summary = "掲示板検索",description = """
                タイトルを検索して該当する、
-                    掲示板の投稿を取得する
+                    掲示板の投稿を取得する,
+                    %LIKE%方式を使用する
             """)
     @GetMapping("/findBySearchLike")
     public ResponseEntity<Page<ResponseBoardDto>> findBySearchLike(
@@ -125,6 +126,21 @@ public class BoardController {
                                                                    @RequestParam String keyword) {
 
         Page<ResponseBoardDto> result = boardService.findBySearchingByLike(pageable, keyword);
+        return ResponseEntity.ok(result);
+    }
+
+    @Operation(summary = "掲示板検索",description =  """
+               タイトルを検索して該当する、
+                    掲示板の投稿を取得する,
+                    FULLTEXT 方式を使用する
+            """ )
+    @GetMapping("/findBySearchFullText")
+    public ResponseEntity<Page<ResponseBoardDto>> findBySearchFullText(
+            @PageableDefault(page = 0, size = 20, sort = "createdAt", direction = DESC)
+            Pageable pageable,
+            @RequestParam String keyword) {
+
+        Page<ResponseBoardDto> result = boardService.findBySearchByFullText(pageable, keyword);
         return ResponseEntity.ok(result);
     }
 }

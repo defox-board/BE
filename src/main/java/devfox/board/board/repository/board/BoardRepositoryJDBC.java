@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -163,6 +164,38 @@ public class BoardRepositoryJDBC {
                         .build()
         );
 
+        return result;
+
+    }
+
+    public List<ResponseBoardDto> findBySearchByMatchAgainst(Pageable pageable, String keyword) {
+
+        int size = pageable.getPageSize();
+        long offset = pageable.getOffset();
+
+
+        String sql = """
+                
+                SELECT b.id, b.title, b.content, u.id as user_id,
+                FROM board b
+                JOIN users u
+                on u.id = b.user_id
+                WHERE MATCH(title)
+                AGAINST(:keyword IN BOOLEAN MODE)
+                """;
+
+        Map<String, String> param = Map.of("keyword", "+" + keyword + "*");
+
+        List<ResponseBoardDto> result = template.query(sql, param, (rs, roNum) ->
+
+                ResponseBoardDto.builder()
+                        .id(rs.getLong("id"))
+                        .title(rs.getString("title"))
+                        .content(rs.getString("content"))
+                        .userId(rs.getLong("user_id"))
+                        .build()
+
+        );
         return result;
 
     }

@@ -2,6 +2,15 @@ server:
   port: 8083
 
 spring:
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+  web:
+    resources:
+      add-mappings: false
+
+
+
   datasource:
     url: jdbc:mysql://localhost:3307/board
     username: root

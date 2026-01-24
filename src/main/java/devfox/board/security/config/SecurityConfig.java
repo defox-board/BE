@@ -112,7 +112,17 @@ public class   SecurityConfig {
 
         http
                 .exceptionHandling(e -> e
-                        .authenticationEntryPoint((request, response, authException) -> {
+                        .authenticationEntryPoint(
+                                (request, response, authException) -> {
+
+
+                                    Object status = request.getAttribute("javax.servlet.error.status_code");
+
+                                    if (status != null) {
+                                        throw authException; //
+                                    }
+
+
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
                         })
 
