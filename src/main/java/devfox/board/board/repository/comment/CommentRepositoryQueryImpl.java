@@ -45,4 +45,6 @@ public class CommentRepositoryQueryImpl implements CommentRepositoryQuery {
         return result;
 
     }
+
+
 }

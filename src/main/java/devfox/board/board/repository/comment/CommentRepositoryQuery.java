@@ -9,4 +9,5 @@ public interface CommentRepositoryQuery {
 
     List<CommentDto> findByBoardId(Long boardId, Long cursorId, int size);
 
+
 }

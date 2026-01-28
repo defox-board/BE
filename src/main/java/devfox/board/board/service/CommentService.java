@@ -4,13 +4,16 @@ import devfox.board.board.dto.request.CreateComment;
 import devfox.board.board.dto.request.UpdateComment;
 import devfox.board.board.dto.response.CommentDto;
 import devfox.board.board.dto.response.CursorResponse;
+import devfox.board.board.dto.response.ResponseComment;
 import devfox.board.board.entity.Comment;
+import devfox.board.board.repository.comment.CommentRepositoryJDBC;
 import devfox.board.users.entity.Users;
 import devfox.board.board.repository.board.BoardRepositoryJpa;
 import devfox.board.board.repository.comment.CommentRepository;
 import devfox.board.users.repository.UserRepositoryJpa;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final UserRepositoryJpa userRepositoryJpa;
     private final BoardRepositoryJpa boardRepositoryJpa;
+    private final CommentRepositoryJDBC commentRepositoryJDBC;
 
 
 
@@ -72,6 +76,38 @@ public class CommentService {
                 .nextCursor(nextCursor)
                 .build();
     }
+
+    //Qurydslなしでカーソル方式
+    @Transactional(readOnly = true)
+    public CursorResponse findByBoardIdByNoQueryDsl(Long boardId, Long cursorId, int size) {
+
+
+        Long safeCursorId;
+        Boolean hasNext;
+        Long nextCursorId;
+
+        //最新順
+        safeCursorId = cursorId == null ? Long.MAX_VALUE : cursorId;
+
+        boardRepositoryJpa.findById(boardId)
+                .orElseThrow(() -> new EntityNotFoundException("存在しない投稿"));
+
+        List<ResponseComment> commentDtoList =
+                commentRepositoryJDBC.findByBoardIdByNoQueryDsl(boardId, safeCursorId, size + 1);
+
+
+        hasNext = commentDtoList.size() > size;
+
+
+        List<ResponseComment> result = commentDtoList.subList(0, Math.min(size,commentDtoList.size()));
+
+        nextCursorId = result.isEmpty() ? null : result.get(result.size() - 1).getCommentId();
+
+
+        return new CursorResponse(result, hasNext, nextCursorId);
+
+    }
+
 
     @Transactional
     @Modifying
