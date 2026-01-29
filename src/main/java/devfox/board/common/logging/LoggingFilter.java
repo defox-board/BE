@@ -34,7 +34,7 @@ public class LoggingFilter extends OncePerRequestFilter {
                 StandardCharsets.UTF_8
         );
 
-        log.trace("[{}] {} body={}", method, url, body);
+        log.debug("[{}] {} body={}", method, url, body);
 
     }
 }

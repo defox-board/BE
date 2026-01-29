@@ -44,6 +44,8 @@ public class BoardService {
         Users user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("ユーザーが見つかりません。"));
 
+        log.info("BOARD_CREATE_START user={} title={}", username, dto.getTitle());
+
         Board build = Board.builder()
                 .title(dto.getTitle())
                 .userId(user.getId())
@@ -51,6 +53,7 @@ public class BoardService {
                 .build();
 
         boardRepositoryJpa.save(build);
+        log.info("BOARD_CREATE_SUCCESS user={} board.id={}", user.getUsername(),build.getId());
     }
     /**
      * 掲示板更新処理
@@ -60,13 +63,17 @@ public class BoardService {
     @Transactional
     public void update(CreateBoardDto dto,String username) {
 
+
         Board board = boardRepositoryJpa.findById(dto.getId())
                 .orElseThrow(() -> new EntityNotFoundException("投稿が見つかりません"));
 
         Users users = userRepositoryJpa.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("ユーザーを見つかりません"));
 
+        log.info("BOARD_UPDATE_START boardId={} userId={}", board.getId(), users.getId());
+
         if (board.getUserId() != users.getId()) {
+            log.warn("BOARD_UPDATE_FORBIDDEN board.userId={} userId={}", board.getUserId(), users.getId());
             throw new IllegalArgumentException("作者のみ削除可能です");
         }
         board.update(dto);
@@ -81,11 +88,14 @@ public class BoardService {
         Users users = userRepositoryJpa.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("存在しないユーザー"));
 
+        log.info("BOARD_DELETE_START boardId={} userId={}",boardId,users.getId());
         if (board.getUserId() != users.getId()) {
+            log.warn("BOARD DELETE FAILED board.userId={} userId={}", board.getUserId(), users.getId());
             throw new IllegalArgumentException("作者のみ削除可能です");
         }
 
         boardRepositoryJpa.delete(board);
+        log.info("BOARD_DELETE SUCCESS boardId={}", boardId);
     }
     /**
      ** 掲示板の全件取得（ページング処理）
