@@ -1,5 +1,17 @@
 <configuration>
 
+
+    <appender name="LOGSTASH"
+              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5044</destination>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <includeContext>true</includeContext>
+            <includeMdc>true</includeMdc>
+            <includeCallerData>true</includeCallerData>
+        </encoder>
+    </appender>
+
     <appender name="CONSOLE"
               class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -26,8 +38,9 @@
     <logger name="com.localhub" level="TRACE"/>
 
     <root level="INFO">
-<!--        <appender-ref ref="CONSOLE"/>-->
+        <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="LOGSTASH"/>
     </root>
 
 </configuration>

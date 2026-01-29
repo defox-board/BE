@@ -104,6 +104,7 @@ public class   SecurityConfig {
                         .requestMatchers("/jwt/exchange", "/jwt/refresh").permitAll()
                         .requestMatchers( "/user/exist", "/user","/login","/join").permitAll()
                         .requestMatchers("/user/**").permitAll()
+                                .requestMatchers("/test").permitAll()
 //                        .requestMatchers("/board/**","/board").authenticated()
                         .anyRequest().authenticated()
                 );

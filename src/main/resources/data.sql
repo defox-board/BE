@@ -1,5 +1,5 @@
 
---댓글 PROCEDURE
+--
 
 DELIMITER $$
 
